@@ -1,0 +1,12 @@
+rootProject.name = 'AndroidCredentialsExample'
+include ':app'
+
+// Include the library
+includeBuild('../../') {
+    dependencySubstitution {
+        substitute(module('com.iconifybeyond.androidcredentials:react-native-android-credentials')).using(project(':'))
+    }
+}
+
+// React Native Gradle plugin is defined in the react-native package
+includeBuild('../node_modules/@react-native/gradle-plugin')

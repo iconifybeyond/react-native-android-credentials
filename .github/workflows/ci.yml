@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  js:
+    name: JS / TypeScript
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (react-native-builder-bob)
+        run: npm run build
+
+  # Android build is intentionally separate and currently a TODO.
+  # The Kotlin code requires a full Android SDK + Gradle environment and
+  # Credential Manager / Play Services stubs that are non-trivial to set up
+  # in CI without an Android emulator. This job will be added once the core
+  # flows are verified on a physical device.
+  #
+  # android:
+  #   name: Android build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-java@v4
+  #       with:
+  #         distribution: temurin
+  #         java-version: 17
+  #     - name: Build example (assembleDebug)
+  #       working-directory: example/android
+  #       run: ./gradlew assembleDebug
